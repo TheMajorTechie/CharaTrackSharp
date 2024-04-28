@@ -99,4 +99,35 @@ public class CharacterTests
         Assert.ThrowsException<CharacteristicNullException>(() => db.GetCharacterContents("Tonkus.Zoey.0", "age"));
         Assert.ThrowsException<CharacteristicNullException>(() => db.GetCharacterContents("Tonkus.Zoey.0", "blah"));
     }
+
+    [TestMethod]
+    public void SetAdditionalCharacteristic()
+    {
+        CharaTrackDatabase db = new CharaTrackDatabase();
+        db.AddCharacter("Zoey", "Tonkus", "0");
+        db.SetCharacterContents("Tonkus.Zoey.0", "characterAgeInYears", "10");
+        Assert.AreEqual("10", db.GetCharacterContents("Tonkus.Zoey.0", "characterAgeInYears"));
+    }
+
+    [TestMethod]
+    public void OrphanCharacterTest()
+    {
+        CharaTrackDatabase db = new CharaTrackDatabase();
+        db.AddCharacter("Zoey", "Tonkus", "0");
+        db.OrphanCharacter("Tonkus.Zoey.0");
+        Assert.IsTrue(db.Characters.ContainsKey("CharaTrack.Zoey.0"));
+        Assert.IsFalse(db.Characters.ContainsKey("Tonkus.Zoey.0"));
+        Assert.AreEqual("CharaTrack", db.GetCharacterContents("CharaTrack.Zoey.0", "maker"));
+    }
+
+    [TestMethod]
+    public void AdoptCharacterTest()
+    {
+        CharaTrackDatabase db = new CharaTrackDatabase();
+        db.AddCharacter("Zoey", "CharaTrack", "0");
+        db.AdoptCharacter("CharaTrack.Zoey.0", "Tonkus");
+        Assert.IsTrue(db.Characters.ContainsKey("Tonkus.Zoey.0"));
+        Assert.IsFalse(db.Characters.ContainsKey("CharaTrack.Zoey.0"));
+        Assert.AreEqual("Tonkus", db.GetCharacterContents("Tonkus.Zoey.0", "maker"));
+    }
 }

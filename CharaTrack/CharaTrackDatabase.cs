@@ -86,6 +86,7 @@ public class CharaTrackDatabase : AbstractDatabase
                     Characters.Remove(characterID);
                     break;
                 }
+            default: Characters[characterID].UpdateCharacteristic(paramType, contents); break;
         }
 
         // TODO: IMPLEMENT CHARACTER RELATIONSHIP GRAPH
@@ -105,6 +106,11 @@ public class CharaTrackDatabase : AbstractDatabase
         {
             SetCharacterContents(characterID, "maker", adopter);
         }
+    }
+
+    public IEnumerable<string> GetCharacters()
+    {
+        return Characters.Keys.ToList();
     }
 
     public override IEnumerable<int> GetDirectCharacterRelations(string characterID)
