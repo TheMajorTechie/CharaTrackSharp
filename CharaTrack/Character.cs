@@ -1,42 +1,98 @@
 ﻿namespace CharaTrack;
 
 /// <summary>
-/// A character object.
+/// A Character object.
 /// </summary>
 public class Character
 {
-    public string name { get; set; }
-    public string id { get; }
-    public string owner { get; set; }
-    public string? origin { get; set; }
-    public string? bio { get; set; }
-    public string? description { get; set; }
-    public Inventory inventory { get; }
-    public Inventory knowledge { get; }
-    public Stack<string> locationHistory { get; }
+    //Base character characteristics
+    public string characterName;
+    public string characterMaker;
+    public string characterRevision;
+    public string characterID;
+    public string characterCreationDate;
+    public string characterLastModifiedDate;
+
+    //optional characteristics
+    public string? characterBio;
+    public string? characterGender;
+    public string? characterAgeInYears;
+    public string? characterHeightInMeters;
+    public string? characterWeightInKilos;
+    public string? characterHeightInFeet;
+    public string? characterWeightInPounds;
+    public string? characterSpecies;
+    public string? characterRace;
+    public string? characterEthnicity;
+
+    public string? characterMiscNotes;
 
     /// <summary>
-    /// A method that gets the relationships of the character
+    /// Default character creator
     /// </summary>
-    /// <param name="lookup"></param>
+    /// <param name="name"></param>
+    /// <param name="maker"></param>
+    /// <param name="revision"></param>
+    public Character(string name, string maker, string revision)
+    {
+        this.characterName = name;
+        this.characterMaker = maker;
+        this.characterRevision = revision;
+        this.characterCreationDate = System.DateTime.UtcNow.ToString("ddMMyyyy.hhmm");
+        this.characterLastModifiedDate = characterCreationDate;
+        this.characterID = maker + "." + name + "." + revision;
+    }
+
+    /// <summary>
+    /// Hashcode Override
+    /// </summary>
     /// <returns></returns>
-    public HashSet<Relations> relationships(Func<string, HashSet<Relations>> lookup)
-    {
-        return lookup(id);
-    }
-
-    public Character(string name, string owner)
-    {
-        this.name = name;
-        this.owner = owner;
-        this.id = owner + "." + name + "." + System.DateTime.UtcNow.ToString("ddMMyyyy.hhmm");
-        this.inventory = new Inventory();
-        this.knowledge = new Inventory();
-        this.locationHistory = new Stack<string>();
-    }
-
     public override int GetHashCode()
     {
-        return id.GetHashCode();
+        return characterID.GetHashCode();
+    }
+
+    public string? GetCharacteristic(string type)
+    {
+        switch(type)
+        {
+            //cases that are guaranteed to exist
+            case "name": return characterName;
+            case "maker": return characterMaker;
+            case "revision": return characterRevision;
+            case "id": return characterID;
+            case "creationDate": return characterCreationDate;
+            case "lastModifiedDate": return characterLastModifiedDate;
+
+            // TODO: ADD SUPPORT FOR OPTIONAL CHARACTERISTICS
+            default: return null;
+        }
+    }
+
+    public void UpdateCharacteristic(string type, string contents)
+    {
+        switch(type)
+        {
+            case "name":
+                {
+                    this.characterName = contents;
+                    this.characterID = characterMaker + "." + characterName + "." + characterRevision;
+                    break;
+                }
+            case "maker":
+                {
+                    this.characterMaker = contents;
+                    this.characterID = characterMaker + "." + characterName + "." + characterRevision;
+                    break;
+                }
+            case "revision":
+                {
+                    this.characterRevision = contents;
+                    this.characterID = characterMaker + "." + characterName + "." + characterRevision;
+                    break;
+                }
+            default: break;
+        }
+        this.characterLastModifiedDate = System.DateTime.UtcNow.ToString("ddMMyyyy.hhmm");
     }
 }
