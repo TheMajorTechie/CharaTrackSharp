@@ -49,7 +49,13 @@ public class CharaTrackDatabase : AbstractDatabase
         }
     }
 
-    public override void RemoveCharacter(string characterID)
+	public void AddCharacter(Character character)
+    {
+        Characters[character.characterID] = character;
+    }
+
+
+	public override void RemoveCharacter(string characterID)
     {
         if(!Characters.Remove(characterID))
         {
